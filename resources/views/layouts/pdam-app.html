@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>@yield('title', 'Pelanggan') — SIAP AIR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B3D3D;
+    --teal-deep:#0E4B4A;
+    --flow:#2C7DA0;
+    --aqua:#1FB6A6;
+    --bg:#F3FAF9;
+    --paper:#FFFFFF;
+    --amber:#E8A33D;
+    --line:#DCEEEA;
+    --muted:#5E7C79;
+    --danger:#D0603A;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:#0a2a2a;
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---- phone frame (for desktop preview) ---- */
+  .frame{
+    width:100%;
+    max-width:420px;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 60px rgba(0,0,0,0.4);
+  }
+
+  /* ---- status bar ---- */
+  .statusbar{
+    height:14px;
+  }
+
+  /* ---- top app bar ---- */
+  .appbar{
+    padding:18px 20px 22px;
+    background:linear-gradient(160deg, var(--teal-deep) 0%, #0A3838 100%);
+    color:#EAF6F4;
+    border-radius:0 0 28px 28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .appbar::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-60px;
+    width:180px; height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(31,182,166,0.25) 0%, transparent 70%);
+  }
+  .appbar-top{
+    display:flex; align-items:center; justify-content:space-between;
+    position:relative; z-index:1;
+  }
+  .brand{
+    display:flex; align-items:center; gap:9px;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:800; font-size:17px; letter-spacing:0.2px;
+  }
+  .brand-mark{
+    width:30px; height:30px; border-radius:9px;
+    background:var(--aqua);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand-mark svg{width:17px; height:17px;}
+  .icon-btn{
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,0.14);
+    position:relative;
+  }
+  .icon-btn .dot{
+    position:absolute; top:7px; right:7px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--amber); border:1.5px solid var(--teal-deep);
+  }
+  .greeting{
+    margin-top:20px; position:relative; z-index:1;
+  }
+  .greeting .eyebrow{
+    font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
+    color:#9FD6CC; font-weight:600;
+  }
+  .greeting h1{
+    margin:4px 0 0; font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:21px; font-weight:700;
+  }
+  .id-pel{
+    margin-top:10px; display:inline-flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.14);
+    padding:6px 12px; border-radius:20px;
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    color:#CFEDE7;
+  }
+
+  /* ---- scroll area ---- */
+  .screen{
+    padding:20px 18px 100px;
+    display:none;
+    animation:fadeIn .35s ease;
+  }
+  .screen.active{display:block;}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-title{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700; font-size:15px;
+    margin:26px 0 12px;
+    display:flex; align-items:center; justify-content:space-between;
+    color:var(--teal-deep);
+  }
+  .section-title .link{
+    font-size:12.5px; font-weight:600; color:var(--flow); cursor:pointer;
+  }
+
+  /* ---- meter gauge (signature element) ---- */
+  .meter-card{
+    margin-top:-46px;
+    background:var(--paper);
+    border-radius:22px;
+    padding:22px 20px 20px;
+    box-shadow:0 14px 34px -18px rgba(11,61,61,0.35);
+    position:relative; z-index:2;
+    border:1px solid var(--line);
+  }
+  .meter-row{
+    display:flex; align-items:center; gap:18px;
+  }
+  .gauge-wrap{ position:relative; width:104px; height:104px; flex:none; }
+  .gauge-wrap svg{ width:104px; height:104px; transform:rotate(-90deg); }
+  .gauge-bg{ fill:none; stroke:#E7F3F1; stroke-width:9; }
+  .gauge-fg{ fill:none; stroke:url(#gaugeGrad); stroke-width:9; stroke-linecap:round;
+    stroke-dasharray:251; stroke-dashoffset:251; animation:gaugeFill 1.1s ease-out forwards .15s; }
+  @keyframes gaugeFill{ to{ stroke-dashoffset:78; } }
+  .gauge-center{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  }
+  .gauge-center .val{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:20px; color:var(--teal-deep);
+  }
+  .gauge-center .unit{ font-size:10px; color:var(--muted); margin-top:1px; letter-spacing:0.03em;}
+  .meter-info{ flex:1; }
+  .meter-info .label{ font-size:12px; color:var(--muted); font-weight:500; }
+  .meter-info .amount{
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:23px;
+    color:var(--ink); margin-top:2px;
+  }
+  .status-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:9px; padding:5px 10px; border-radius:20px;
+    background:#FDF1E1; color:#A6631A; font-size:11.5px; font-weight:700;
+  }
+  .status-chip.lunas{ background:#E8F6EE; color:#2F8A56; }
+  .status-chip::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .pay-btn{
+    margin-top:16px; width:100%; padding:13px; border:none; border-radius:14px;
+    background:var(--teal-deep); color:#EAF6F4; font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .pay-btn:active{ transform:scale(0.98); }
+
+  /* ---- quick actions ---- */
+  .quick-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  }
+  .quick-item{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px;
+    padding:13px 6px 10px; text-align:center; cursor:pointer;
+  }
+  .quick-item .qicon{
+    width:34px; height:34px; margin:0 auto 7px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .quick-item span{ font-size:10.5px; font-weight:600; color:var(--ink); line-height:1.2; display:block; }
+
+  /* ---- usage chart ---- */
+  .chart-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:18px;
+  }
+  .chart-bars{
+    display:flex; align-items:flex-end; gap:8px; height:110px; margin-top:14px;
+  }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .bar{
+    width:100%; max-width:26px; border-radius:6px 6px 3px 3px;
+    background:linear-gradient(180deg, var(--aqua), var(--flow));
+    animation:growUp .7s ease-out both;
+  }
+  .bar.current{ background:linear-gradient(180deg, var(--amber), #C97F1F); }
+  @keyframes growUp{ from{ transform:scaleY(0); transform-origin:bottom;} to{ transform:scaleY(1);} }
+  .bar-col small{ font-size:10px; color:var(--muted); font-weight:500; }
+
+  /* ---- list items ---- */
+  .list-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px;
+    padding:4px 6px; overflow:hidden;
+  }
+  .list-item{
+    display:flex; align-items:center; gap:12px; padding:13px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .list-item:last-child{ border-bottom:none; }
+  .list-ic{
+    width:38px; height:38px; border-radius:11px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    background:#E9F6F3; color:var(--teal-deep);
+  }
+  .list-body{ flex:1; min-width:0; }
+  .list-body .t{ font-size:13.5px; font-weight:600; color:var(--ink); }
+  .list-body .s{ font-size:11.5px; color:var(--muted); margin-top:1px; }
+  .list-amt{ font-family:'JetBrains Mono', monospace; font-size:12.5px; font-weight:700; text-align:right; }
+  .list-amt.pos{ color:#2F8A56; }
+
+  /* ---- bottom nav ---- */
+  .bottomnav{
+    position:absolute; left:0; right:0; bottom:0;
+    background:var(--paper);
+    border-top:1px solid var(--line);
+    display:flex; padding:9px 6px calc(9px + env(safe-area-inset-bottom));
+    z-index:5;
+  }
+  .navbtn{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    background:none; border:none; cursor:pointer; color:#9BB3B0; padding:4px 0;
+  }
+  .navbtn svg{ width:21px; height:21px; }
+  .navbtn span{ font-size:10px; font-weight:600; }
+  .navbtn.active{ color:var(--teal-deep); }
+  .navbtn.active svg{ color:var(--aqua); }
+
+  /* ---- form elements (pengaduan/akun) ---- */
+  .field{ margin-bottom:14px; }
+  .field label{ font-size:12px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px; }
+  .field select, .field textarea, .field input{
+    width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 13px;
+    font-family:'Inter', sans-serif; font-size:13.5px; color:var(--ink); background:var(--paper);
+    resize:none;
+  }
+  .field select:focus, .field textarea:focus, .field input:focus{
+    outline:2px solid var(--aqua); outline-offset:1px; border-color:transparent;
+  }
+  .submit-btn{
+    width:100%; padding:13px; border:none; border-radius:14px; background:var(--flow);
+    color:#fff; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .submit-btn:active{ transform:scale(0.98); }
+
+  .profile-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:20px; text-align:center;
+  }
+  .avatar{
+    width:66px; height:66px; border-radius:50%; margin:0 auto 12px;
+    background:linear-gradient(135deg, var(--aqua), var(--flow));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px;
+  }
+  .profile-card h3{ margin:0; font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; }
+  .profile-card p{ margin:3px 0 0; font-size:12px; color:var(--muted); }
+
+  .toast{
+    position:absolute; left:18px; right:18px; bottom:88px;
+    background:var(--teal-deep); color:#EAF6F4; padding:12px 16px; border-radius:14px;
+    font-size:13px; font-weight:600; text-align:center;
+    box-shadow:0 10px 24px -10px rgba(0,0,0,0.5);
+    opacity:0; pointer-events:none; transform:translateY(10px);
+    transition:all .3s ease; z-index:20;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="appbar">
+    <div class="statusbar"></div>
+    <div class="appbar-top">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 10.5 5 15a7 7 0 0014 0c0-4.5-7-13-7-13z" fill="#0E4B4A"/></svg>
+        </div>
+        AirKu
+      </div>
+      <div class="icon-btn" onclick="showToast('Belum ada notifikasi baru')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#EAF6F4" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        <div class="dot"></div>
+      </div>
+    </div>
+    <div class="greeting">
+      <div class="eyebrow">Selamat datang</div>
+      <h1>Bapak Andi Wijaya</h1>
+      <div class="id-pel">ID PEL: 03.221.0457 · Cluster Melati B2</div>
+    </div>
+  </div>
+
+  <!-- ================= BERANDA ================= -->
+  <div class="screen active" id="beranda">
+    <div class="meter-card">
+      <div class="meter-row">
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1FB6A6"/>
+                <stop offset="100%" stop-color="#2C7DA0"/>
+              </linearGradient>
+            </defs>
+            <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+            <circle class="gauge-fg" cx="50" cy="50" r="40"/>
+          </svg>
+          <div class="gauge-center">
+            <div class="val">18.4</div>
+            <div class="unit">m³ bulan ini</div>
+          </div>
+        </div>
+        <div class="meter-info">
+          <div class="label">Tagihan Juni 2026</div>
+          <div class="amount">Rp 142.500</div>
+          <div class="status-chip">Jatuh tempo 20 Jul</div>
+        </div>
+      </div>
+      <button class="pay-btn" onclick="goTo('tagihan')">Bayar Tagihan Sekarang</button>
+    </div>
+
+    <div class="section-title">Layanan Cepat</div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="goTo('tagihan')">
+        <div class="qicon" style="background:#E9F6F3;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E4B4A" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <span>Bayar Tagihan</span>
+      </div>
+      <div class="quick-item" onclick="goTo('pemakaian')">
+        <div class="qicon" style="background:#E7F1F8;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C7DA0" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        </div>
+        <span>Riwayat Pakai</span>
+      </div>
+      <div class="quick-item" onclick="goTo('pengaduan')">
+        <div class="qicon" style="background:#FDF1E1;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6631A" stroke-width="2"><path d="M12 9v4"/><circle cx="12" cy="12" r="9"/><path d="M12 16h.01"/></svg>
+        </div>
+        <span>Lapor Gangguan</span>
+      </div>
+      <div class="quick-item" onclick="showToast('Membuka input angka meter…')">
+        <div class="qicon" style="background:#F1EAF8;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6A4C9C" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg>
+        </div>
+        <span>Input Meter</span>
+      </div>
+    </div>
+
+    <div class="section-title">Pemakaian 6 Bulan Terakhir <span class="link" onclick="goTo('pemakaian')">Detail</span></div>
+    <div class="chart-card">
+      <div class="chart-bars">
+        <div class="bar-col"><div class="bar" style="height:52%"></div><small>Jan</small></div>
+        <div class="bar-col"><div class="bar" style="height:64%"></div><small>Feb</small></div>
+        <div class="bar-col"><div class="bar" style="height:46%"></div><small>Mar</small></div>
+        <div class="bar-col"><div class="bar" style="height:71%"></div><small>Apr</small></div>
+        <div class="bar-col"><div class="bar" style="height:58%"></div><small>Mei</small></div>
+        <div class="bar-col"><div class="bar current" style="height:84%"></div><small>Jun</small></div>
+      </div>
+    </div>
+
+    <div class="section-title">Transaksi Terakhir</div>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-ic">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="list-body"><div class="t">Pembayaran Tagihan Mei</div><div class="s">18 Jun 2026 · QRIS</div></div>
+        <div class="list-amt">Rp 128.000</div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="list-body"><div class="t">Pembayaran Tagihan April</div><div class="s">17 Mei 2026 · Transfer Bank</div></div>
+        <div class="list-amt">Rp 119.500</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAGIHAN ================= -->
+  <div class="screen" id="tagihan">
+    <div class="section-title" style="margin-top:6px;">Tagihan Aktif</div>
+    <div class="list-card" style="padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-size:12px; color:var(--muted); font-weight:500;">Periode Juni 2026</div>
+          <div style="font-family:'Plus Jakarta Sans'; font-weight:800; font-size:24px; margin-top:2px;">Rp 142.500</div>
+        </div>
+        <div class="status-chip">Belum Bayar</div>
+      </div>
+      <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between;">
+        <span>Pemakaian: 18 m³</span><span>Jatuh tempo: 20 Jul 2026</span>
+      </div>
+      <button class="pay-btn" onclick="showToast('Membuka halaman pembayaran…')">Bayar Sekarang</button>
+    </div>
+
+    <div class="section-title">Metode Pembayaran</div>
+    <div class="quick-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="quick-item" onclick="showToast('QRIS dipilih')">
+        <div class="qicon" style="background:#E9F6F3;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E4B4A" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <span>QRIS</span>
+      </div>
+      <div class="quick-item" onclick="showToast('Virtual Account dipilih')">
+        <div class="qicon" style="background:#E7F1F8;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C7DA0" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <span>Virtual Account</span>
+      </div>
+      <div class="quick-item" onclick="showToast('E-Wallet dipilih')">
+        <div class="qicon" style="background:#FDF1E1;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6631A" stroke-width="2"><path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-2"/><path d="M14 12h7l-2-2m2 2l-2 2"/></svg>
+        </div>
+        <span>E-Wallet</span>
+      </div>
+    </div>
+
+    <div class="section-title">Riwayat Tagihan</div>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="list-body"><div class="t">Mei 2026</div><div class="s">Lunas · 18 Mei 2026</div></div>
+        <div class="list-amt pos">Rp 128.000</div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="list-body"><div class="t">April 2026</div><div class="s">Lunas · 17 Apr 2026</div></div>
+        <div class="list-amt pos">Rp 119.500</div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="list-body"><div class="t">Maret 2026</div><div class="s">Lunas · 16 Mar 2026</div></div>
+        <div class="list-amt pos">Rp 98.000</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PEMAKAIAN ================= -->
+  <div class="screen" id="pemakaian">
+    <div class="section-title" style="margin-top:6px;">Grafik Pemakaian Air</div>
+    <div class="chart-card">
+      <div style="font-size:12px; color:var(--muted);">Rata-rata 6 bulan: <b style="color:var(--ink)">15.8 m³/bulan</b></div>
+      <div class="chart-bars">
+        <div class="bar-col"><div class="bar" style="height:52%"></div><small>Jan</small></div>
+        <div class="bar-col"><div class="bar" style="height:64%"></div><small>Feb</small></div>
+        <div class="bar-col"><div class="bar" style="height:46%"></div><small>Mar</small></div>
+        <div class="bar-col"><div class="bar" style="height:71%"></div><small>Apr</small></div>
+        <div class="bar-col"><div class="bar" style="height:58%"></div><small>Mei</small></div>
+        <div class="bar-col"><div class="bar current" style="height:84%"></div><small>Jun</small></div>
+      </div>
+    </div>
+
+    <div class="section-title">Detail Angka Meter</div>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-ic" style="background:#F1EAF8; color:#6A4C9C;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
+        <div class="list-body"><div class="t">Angka Meter Awal</div><div class="s">1 Juni 2026</div></div>
+        <div class="list-amt">1245 m³</div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic" style="background:#F1EAF8; color:#6A4C9C;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
+        <div class="list-body"><div class="t">Angka Meter Akhir</div><div class="s">30 Juni 2026</div></div>
+        <div class="list-amt">1263 m³</div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
+        <div class="list-body"><div class="t">Total Pemakaian</div><div class="s">Periode Juni 2026</div></div>
+        <div class="list-amt">18 m³</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PENGADUAN ================= -->
+  <div class="screen" id="pengaduan">
+    <div class="section-title" style="margin-top:6px;">Buat Laporan Gangguan</div>
+    <div class="list-card" style="padding:16px;">
+      <div class="field">
+        <label>Jenis Gangguan</label>
+        <select>
+          <option>Air tidak mengalir</option>
+          <option>Kebocoran pipa</option>
+          <option>Air keruh / kotor</option>
+          <option>Meter rusak</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Lokasi</label>
+        <input type="text" value="Cluster Melati B2, No. 14" />
+      </div>
+      <div class="field">
+        <label>Deskripsi</label>
+        <textarea rows="4" placeholder="Ceritakan gangguan yang dialami…"></textarea>
+      </div>
+      <button class="submit-btn" onclick="showToast('Laporan berhasil dikirim ke petugas')">Kirim Laporan</button>
+    </div>
+
+    <div class="section-title">Status Laporan Saya</div>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-ic" style="background:#FDF1E1; color:#A6631A;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><circle cx="12" cy="12" r="9"/><path d="M12 16h.01"/></svg></div>
+        <div class="list-body"><div class="t">Air tidak mengalir</div><div class="s">Dikirim 1 Jul · Diproses</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="list-body"><div class="t">Meter rusak</div><div class="s">Selesai · 12 Jun 2026</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AKUN ================= -->
+  <div class="screen" id="akun">
+    <div class="profile-card" style="margin-top:6px;">
+      <div class="avatar">AW</div>
+      <h3>Andi Wijaya</h3>
+      <p>ID Pelanggan 03.221.0457</p>
+    </div>
+
+    <div class="section-title">Informasi Pelanggan</div>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1116 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="list-body"><div class="t">Alamat</div><div class="s">Jl. Melati Blok B2 No.14, Sukamaju</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.6a2 2 0 01-.4 2.1L8 9.7a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.5 2.6.6a2 2 0 011.9 2.3z"/></svg></div>
+        <div class="list-body"><div class="t">Nomor HP</div><div class="s">0812-3456-7890</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div class="list-body"><div class="t">Golongan Tarif</div><div class="s">Rumah Tangga R-1</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Pengaturan</div>
+    <div class="list-card">
+      <div class="list-item" onclick="showToast('Membuka pengaturan notifikasi')">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+        <div class="list-body"><div class="t">Notifikasi</div><div class="s">Pengingat jatuh tempo tagihan</div></div>
+      </div>
+      <div class="list-item" onclick="showToast('Membuka bantuan pelanggan')">
+        <div class="list-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 115.5 1.7c-.7 1-1.6 1.3-1.6 2.6M12 17h.01"/></svg></div>
+        <div class="list-body"><div class="t">Pusat Bantuan</div><div class="s">Hubungi CS PDAM Tirta Sejahtera</div></div>
+      </div>
+      <div class="list-item" onclick="showToast('Anda telah keluar')">
+        <div class="list-ic" style="background:#FBEAE4; color:var(--danger);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+        <div class="list-body"><div class="t" style="color:var(--danger);">Keluar</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ================= BOTTOM NAV ================= -->
+  <div class="bottomnav">
+    <button class="navbtn active" data-target="beranda" onclick="goTo('beranda')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button class="navbtn" data-target="tagihan" onclick="goTo('tagihan')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+      <span>Tagihan</span>
+    </button>
+    <button class="navbtn" data-target="pemakaian" onclick="goTo('pemakaian')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+      <span>Pemakaian</span>
+    </button>
+    <button class="navbtn" data-target="pengaduan" onclick="goTo('pengaduan')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><circle cx="12" cy="12" r="9"/><path d="M12 16h.01"/></svg>
+      <span>Pengaduan</span>
+    </button>
+    <button class="navbtn" data-target="akun" onclick="goTo('akun')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+      <span>Akun</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.target === id));
+    document.querySelector('.frame').scrollTo(0,0);
+    window.scrollTo(0,0);
+  }
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>
