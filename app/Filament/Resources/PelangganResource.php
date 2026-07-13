@@ -128,7 +128,9 @@ class PelangganResource extends Resource
                                 'role'      => 'pelanggan',
                                 'is_active' => true,
                             ])->id;
-                        }),
+                        })
+                        ->disabled(fn (string $operation): bool => $operation === 'edit')
+                        ->dehydrated(fn (string $operation): bool => $operation !== 'edit'),
                 ]),
         ]);
     }
