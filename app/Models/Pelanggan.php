@@ -31,6 +31,14 @@ class Pelanggan extends Model
         return $this->belongsTo(User::class);
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Pelanggan $pelanggan) {
+            // Hapus akun user terkait (jika ada) saat pelanggan dihapus
+            $pelanggan->user()?->delete();
+        });
+    }
+
     // Operator yang menangani pelanggan ini (via pivot)
     public function operators(): BelongsToMany
     {
