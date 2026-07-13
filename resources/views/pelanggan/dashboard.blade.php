@@ -1,6 +1,6 @@
 @extends('layouts.pelanggan')
 @section('title', 'Beranda')
-@section('header', 'Halo, ' . explode(' ', auth()->user()->name)[0])
+@section('header', 'Halo, ' . explode(' ', $pelanggan->nama)[0])
 
 @section('content')
 
