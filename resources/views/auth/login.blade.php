@@ -31,7 +31,7 @@
                     @endif
                 </div>
                 <h1 class="text-2xl font-bold text-[#0B3D3D] tracking-tight">{{ $configGeneral->app_name ?? 'SIAP AIR' }}</h1>
-                <p class="text-gray-500 text-xs mt-1 font-medium">Sistem Informasi Air Perpipaan</p>
+                <p class="text-gray-500 text-xs mt-1 font-medium">Sistem Informasi, Administrasi, dan Pembayaran Air Bersih</p>
             </div>
 
             @if($errors->any())
