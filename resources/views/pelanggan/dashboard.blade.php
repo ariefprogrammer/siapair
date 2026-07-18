@@ -167,7 +167,7 @@
     const installBtn = document.getElementById('btn-install-app');
 
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); // cegah mini-infobar otomatis browser
+        e.preventDefault(); 
         deferredPrompt = e;
         installBtn.classList.remove('hidden');
         installBtn.classList.add('flex');
@@ -177,12 +177,10 @@
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        // outcome: 'accepted' atau 'dismissed', bisa dikirim ke analytics kalau perlu
         deferredPrompt = null;
         installBtn.classList.add('hidden');
     });
 
-    // Kalau user sudah install (dari sumber lain), sembunyikan tombol
     window.addEventListener('appinstalled', () => {
         installBtn.classList.add('hidden');
         deferredPrompt = null;
