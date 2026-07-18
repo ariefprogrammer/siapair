@@ -114,7 +114,12 @@
     </div>
 </div>
 @endif
-
+<button id="btn-install-app" class="flex items-center justify-center gap-2 w-full bg-deep text-white text-center font-semibold py-3.5 mt-4 rounded-2xl text-sm transition active:scale-[0.98]">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+  </svg>
+  Install Aplikasi
+</button>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
     const ctx = document.getElementById('chartPemakaian');
@@ -156,6 +161,31 @@
                 }
             }
         }
+    });
+
+    let deferredPrompt;
+    const installBtn = document.getElementById('btn-install-app');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); // cegah mini-infobar otomatis browser
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+        installBtn.classList.add('flex');
+    });
+
+    installBtn?.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        // outcome: 'accepted' atau 'dismissed', bisa dikirim ke analytics kalau perlu
+        deferredPrompt = null;
+        installBtn.classList.add('hidden');
+    });
+
+    // Kalau user sudah install (dari sumber lain), sembunyikan tombol
+    window.addEventListener('appinstalled', () => {
+        installBtn.classList.add('hidden');
+        deferredPrompt = null;
     });
 </script>
 
